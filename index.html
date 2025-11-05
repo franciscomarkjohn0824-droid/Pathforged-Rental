@@ -263,7 +263,7 @@
         background: rgba(255,255,255,0.3);
     }
 
-    /* ✨ ABOUT US PAGE STYLE ✨ */
+    /* ABOUT US PAGE STYLE*/
     .about {
         display: none;
         background: rgba(255,255,255,0.1);
@@ -284,23 +284,143 @@
 </style>
 </head>
 <body>
-
-<!-- ✨ LANDING PAGE ✨ -->
+<!-- LANDING PAGE  -->
 <div class="landing" id="landingPage" onclick="enterSite()">
     <div class="landing-content">
-        <h1>Welcome to Pathforged Rental</h1>
-        <p>Tap anywhere to start your journey 🚗</p>
+        <img src="carcar.jpg" alt="Pathforged Rentals Logo" class="landing-logo">
+
+        <p class="landing-tagline">Your trusted car rental service in the Philippines </p>
+
+        <div class="company-description">
+            <p><b>Pathforged Rentals</b> is a proudly Philippine based car rental company offering reliable and affordable vehicles for every journey. 
+            Our mission is to make every road safer, smoother, and more convenient through trust, efficiency, and exceptional service. 
+            Whether you’re exploring the city or traveling long distances, we forge your path with comfort and reliability.</p>
+        </div>
+
+        <p class="tap-hint">Tap anywhere to enter</p>
+    </div>
+
+    <div class="landing-footer">
+        © 2025 <span>Pathforged Rentals</span> | Driven by Passion and Service
     </div>
 </div>
 
-<h1>Pathforged Rental</h1>
-<h3>Car Rental Service in the Philippines</h3>
 
-<!-- ✨ MODERN LOGIN SECTION ✨ -->
+<style>
+/*  LANDING PAGE  */
+.landing {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, #0a3d62, #1a5276, #2471a3, #5dade2, #1f618d);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* pushes content up */
+    align-items: center;
+    z-index: 999;
+    transition: opacity 1s ease, visibility 1s ease;
+    overflow: hidden;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.landing.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.landing-content {
+    margin-top: 10vh; /* pushes content higher (was centered before) */
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    max-width: 700px;
+    animation: fadeInUp 2s ease forwards;
+}
+
+.landing-logo {
+    width: 230px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+    margin-bottom: 10px;
+    animation: fadeIn 2s ease;
+}
+
+.landing-tagline {
+    font-size: 1.1em;
+    margin-top: 5px;
+    color: #eaf6ff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Smaller company description */
+.company-description {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px 20px;
+    max-width: 600px;
+    color: #f0f8ff;
+    font-size: 0.9em;
+    line-height: 1.5;
+    text-shadow: 0 0 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    animation: fadeInUp 3s ease forwards;
+}
+
+.tap-hint {
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: rgba(255,255,255,0.85);
+    animation: pulse 2s infinite;
+}
+
+.landing-footer {
+    position: absolute;
+    bottom: 50px;
+    font-size: 0.9em;
+    color: rgba(255,255,255,0.8);
+    animation: fadeIn 3s ease;
+}
+
+.landing-footer span {
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+</style>
+
+</div>
+<!--  MODERN LOGIN SECTION  -->
 <div class="login-page" id="loginSection" style="display:none;">
   <div class="login-box">
-      <h2>Welcome Back!</h2>
-      <p class="subtitle">Log in or sign up to begin your journey 🚗</p>
+      <h2>Welcome</h2>
+      <p class="subtitle">Log in or sign up to begin your journey </p>
       <input type="text" id="username" placeholder="Username">
       <input type="password" id="password" placeholder="Password">
       <button class="btn-login" onclick="login()">Login</button>
@@ -310,7 +430,7 @@
   </div>
 </div>
 
-<!-- ✨ ABOUT US SECTION ✨ -->
+<!-- ABOUT US SECTION  -->
 <div class="container about" id="aboutSection">
     <h2>About Pathforged Rental</h2>
     <p><b>Company Name:</b> Pathforged Rental</p>
