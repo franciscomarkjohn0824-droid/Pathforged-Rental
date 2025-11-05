@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathforged Rental</title>
+<style>
+    body {
+        font-family: "Poppins", sans-serif;
+        background-color: #e3eaf2;
+        color: #0a3d62;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        color: #0a3d62;
+        margin-top: 20px;
+        font-size: 2.2em;
+    }
+
+    .container {
+        background-color: #f2f6fa;
+        width: 90%;
+        max-width: 850px;
+        margin: 30px auto;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    input, select, button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 8px;
+        border: 1px solid #0a3d62;
+        width: 90%;
+        max-width: 400px;
+        font-size: 15px;
+    }
+
+    button {
+        background-color: #0a3d62;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background-color: #1a5276;
+        transform: scale(1.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #b0c4de;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #b0c4de;
+    }
+
+    .receipt {
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        text-align: left;
+    }
+
+    .admin, .about {
+        display: none;
+        margin-top: 40px;
+    }
+
+    /* ✨ LANDING PAGE ✨ */
+    .landing {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(-45deg, #0a3d62, #1a5276, #154360, #2471a3);
+        background-size: 400% 400%;
+        animation: gradientMove 8s ease infinite;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        transition: opacity 1s ease, visibility 1s ease;
+        overflow: hidden;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .landing.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .landing-content {
+        text-align: center;
+        position: relative;
+        z-index: 10;
+        animation: floatUp 3s ease-in-out infinite;
+    }
+
+    .landing h1 {
+        font-size: 3em;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        margin: 0;
+        animation: glowText 2s ease-in-out infinite alternate;
+    }
+
+    .landing p {
+        font-size: 1.2em;
+        margin-top: 10px;
+        animation: fadeIn 3s ease-in-out;
+    }
+
+    @keyframes glowText {
+        from { text-shadow: 0 0 10px #fff, 0 0 20px #76d7c4; }
+        to { text-shadow: 0 0 20px #fff, 0 0 30px #85c1e9; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes floatUp {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* ✨ MODERN LOGIN PAGE ✨ */
+    .login-page {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top right, #2471a3, #0a3d62);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInLogin 1s ease;
+        z-index: 998;
+    }
+
+    @keyframes fadeInLogin {
+        from { opacity: 0; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .login-box {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        padding: 40px 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        color: #fff;
+        width: 320px;
+        animation: floatUpLogin 1.5s ease-in-out;
+    }
+
+    @keyframes floatUpLogin {
+        0% { transform: translateY(20px); opacity: 0; }
+        100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .login-box h2 {
+        margin: 0;
+        font-size: 2em;
+        letter-spacing: 1px;
+        text-shadow: 0 0 10px rgba(255,255,255,0.4);
+    }
+
+    .subtitle {
+        font-size: 0.95em;
+        color: #dfe6e9;
+        margin-bottom: 20px;
+    }
+
+    .login-box input {
+        width: 85%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: none;
+        font-size: 1em;
+        text-align: center;
+        outline: none;
+        background: rgba(255, 255, 255, 0.85);
+        color: #0a3d62;
+        transition: 0.3s;
+    }
+
+    .login-box input:focus {
+        transform: scale(1.03);
+        box-shadow: 0 0 10px #85c1e9;
+    }
+
+    .btn-login, .btn-signin, .btn-about {
+        width: 90%;
+        padding: 10px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 10px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #0a3d62, #1a5276);
+        color: #fff;
+    }
+    .btn-login:hover {
+        background: linear-gradient(135deg, #1a5276, #2980b9);
+        transform: scale(1.05);
+    }
+
+    .btn-signin {
+        background: linear-gradient(135deg, #16a085, #1abc9c);
+        color: #fff;
+    }
+    .btn-signin:hover {
+        background: linear-gradient(135deg, #1abc9c, #48c9b0);
+        transform: scale(1.05);
+    }
+
+    .btn-about {
+        background: transparent;
+        border: 2px solid #fff;
+        color: #fff;
+    }
+    .btn-about:hover {
+        background: rgba(255,255,255,0.2);
+    }
+
+    .divider {
+        margin: 15px auto;
+        width: 60%;
+        height: 1px;
+        background: rgba(255,255,255,0.3);
+    }
+
+    /* ✨ ABOUT US PAGE STYLE ✨ */
+    .about {
+        display: none;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        width: 80%;
+        max-width: 700px;
+        margin: 50px auto;
+        padding: 30px;
+        color: #0a3d62;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .about h2 {
+        color: #0a3d62;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- ✨ LANDING PAGE ✨ -->
+<div class="landing" id="landingPage" onclick="enterSite()">
+    <div class="landing-content">
+        <h1>Welcome to Pathforged Rental</h1>
+        <p>Tap anywhere to start your journey 🚗</p>
+    </div>
+</div>
+
+<h1>Pathforged Rental</h1>
+<h3>Car Rental Service in the Philippines</h3>
+
+<!-- ✨ MODERN LOGIN SECTION ✨ -->
+<div class="login-page" id="loginSection" style="display:none;">
+  <div class="login-box">
+      <h2>Welcome Back!</h2>
+      <p class="subtitle">Log in or sign up to begin your journey 🚗</p>
+      <input type="text" id="username" placeholder="Username">
+      <input type="password" id="password" placeholder="Password">
+      <button class="btn-login" onclick="login()">Login</button>
+      <button class="btn-signin" onclick="signin()">Sign In</button>
+      <div class="divider"></div>
+      <button class="btn-about" onclick="showAbout()">About Us</button>
+  </div>
+</div>
+
+<!-- ✨ ABOUT US SECTION ✨ -->
+<div class="container about" id="aboutSection">
+    <h2>About Pathforged Rental</h2>
+    <p><b>Company Name:</b> Pathforged Rental</p>
+    <p><b>Owners:</b> Henaez Jar-ar, Morales Gerlyn Nathalie, Francisco Mark John</p>
+    <p><b>Profile:</b> Pathforged Rental is a Philippine-based car rental company providing reliable and affordable vehicles. We aim to make every travel path convenient and secure through trust, safety, and efficiency.</p>
+    <button onclick="backToLogin()">Back</button>
+</div>
+
+<!-- MAIN USER SECTION -->
+<div class="container" id="mainSection" style="display:none;">
+    <h2>Car Rental Form</h2>
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="text" id="address" placeholder="Address">
+    <input type="text" id="contact" placeholder="Contact Number">
+    <input type="number" id="age" placeholder="Age">
+    <select id="car">
+        <option value="">-- Select Car --</option>
+        <option value="Toyota Vios">Toyota Vios - ₱2500/day</option>
+        <option value="Honda City">Honda City - ₱2800/day</option>
+        <option value="Mitsubishi Xpander">Mitsubishi Xpander - ₱3000/day</option>
+        <option value="Ford Ranger">Ford Ranger - ₱3500/day</option>
+    </select>
+    <input type="number" id="days" placeholder="Number of Days">
+    <select id="destination">
+        <option value="">-- Select Destination --</option>
+        <option value="Manila">Manila</option>
+        <option value="Cebu">Cebu</option>
+        <option value="Davao">Davao</option>
+        <option value="Baguio">Baguio</option>
+    </select><br>
+    <button onclick="addOrder()">Add Order</button>
+    <button onclick="updateOrder()">Edit Order</button>
+    <button onclick="userLogout()">Logout</button>
+
+    <h3>Orders</h3>
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Car</th>
+                <th>Days</th>
+                <th>Destination</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div class="receipt" id="receipt"></div>
+</div>
+
+<!-- ADMIN SECTION -->
+<div class="container admin" id="adminSection" style="display:none;">
+    <h2>Admin Dashboard</h2>
+    <table id="adminTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Car</th>
+                <th>Days</th>
+                <th>Destination</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="receipt" id="adminReceipt"></div>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+let orders = [];
+let editIndex = -1;
+
+function enterSite() {
+    const landing = document.getElementById('landingPage');
+    landing.classList.add('fade-out');
+    setTimeout(() => {
+        landing.style.display = 'none';
+        document.getElementById("loginSection").style.display = "flex";
+    }, 1000);
+}
+
+function login() {
+    const user = document.getElementById('username').value.trim();
+    const pass = document.getElementById('password').value.trim();
+
+    if (!user || !pass) return alert("Enter username and password");
+
+    if (user === "admin" && pass === "admin123") {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("adminSection").style.display = "block";
+        loadAdminTable();
+    } else {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("mainSection").style.display = "block";
+    }
+}
+
+function signin() { alert("Account successfully created!"); }
+function backToLogin() {
+    document.getElementById("aboutSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "flex";
+}
+function showAbout() {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("aboutSection").style.display = "block";
+}
+
+function getCarPrice(car) {
+    switch(car) {
+        case "Toyota Vios": return 2500;
+        case "Honda City": return 2800;
+        case "Mitsubishi Xpander": return 3000;
+        case "Ford Ranger": return 3500;
+        default: return 0;
+    }
+}
+
+function addOrder() {
+    const name = document.getElementById("name").value;
+    const address = document.getElementById("address").value;
+    const contact = document.getElementById("contact").value;
+    const age = document.getElementById("age").value;
+    const car = document.getElementById("car").value;
+    const days = parseInt(document.getElementById("days").value);
+    const destination = document.getElementById("destination").value;
+
+    if (!name || !address || !contact || !age || !car || !days || !destination)
+        return alert("Please fill all fields!");
+
+    const total = getCarPrice(car) * days;
+    const order = { name, address, contact, age, car, days, destination, total, status: "Pending" };
+    orders.push(order);
+
+    displayOrders();
+    printReceipt(order);
+    clearInputs();
+}
+
+function displayOrders() {
+    const tbody = document.querySelector("#orderTable tbody");
+    tbody.innerHTML = "";
+    orders.forEach((o, i) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${o.name}</td>
+                <td>${o.car}</td>
+                <td>${o.days}</td>
+                <td>${o.destination}</td>
+                <td>₱${o.total.toLocaleString()}</td>
+                <td>
+                    <button onclick="editRow(${i})">Edit</button>
+                    <button onclick="deleteRow(${i})">Delete</button>
+                </td>
+            </tr>`;
+    });
+    loadAdminTable();
+}
+
+function editRow(i) {
+    const o = orders[i];
+    document.getElementById("name").value = o.name;
+    document.getElementById("address").value = o.address;
+    document.getElementById("contact").value = o.contact;
+    document.getElementById("age").value = o.age;
+    document.getElementById("car").value = o.car;
+    document.getElementById("days").value = o.days;
+    document.getElementById("destination").value = o.destination;
+    editIndex = i;
+}
+
+function updateOrder() {
+    if (editIndex === -1) return alert("Select an order to edit first!");
+    const name = document.getElementById("name").value;
+    const address = document.getElementById("address").value;
+    const contact = document.getElementById("contact").value;
+    const age = document.getElementById("age").value;
+    const car = document.getElementById("car").value;
+    const days = parseInt(document.getElementById("days").value);
+    const destination = document.getElementById("destination").value;
+    const total = getCarPrice(car) * days;
+    orders[editIndex] = { name, address, contact, age, car, days, destination, total, status: "Pending" };
+    displayOrders();
+    clearInputs();
+    editIndex = -1;
+}
+
+function deleteRow(i) {
+    orders.splice(i, 1);
+    displayOrders();
+}
+
+function clearInputs() {
+    document.getElementById("name").value = "";
+    document.getElementById("address").value = "";
+    document.getElementById("contact").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("car").value = "";
+    document.getElementById("days").value = "";
+    document.getElementById("destination").value = "";
+}
+
+function printReceipt(o) {
+    document.getElementById("receipt").innerHTML = `
+        <h4>Rental Summary</h4>
+        <p><b>Name:</b> ${o.name}</p>
+        <p><b>Car:</b> ${o.car}</p>
+        <p><b>Days:</b> ${o.days}</p>
+        <p><b>Destination:</b> ${o.destination}</p>
+        <p><b>Total:</b> ₱${o.total.toLocaleString()}</p>`;
+}
+
+function loadAdminTable() {
+    const tbody = document.querySelector("#adminTable tbody");
+    tbody.innerHTML = "";
+    orders.forEach((o, i) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${o.name}</td>
+                <td>${o.car}</td>
+                <td>${o.days}</td>
+                <td>${o.destination}</td>
+                <td>₱${o.total.toLocaleString()}</td>
+                <td>
+                    <button onclick="approve(${i})">Approve</button>
+                    <button onclick="decline(${i})">Decline</button>
+                </td>
+            </tr>`;
+    });
+}
+
+function approve(i) {
+    orders[i].status = "Approved";
+    displayAdminReceipt(orders[i]);
+}
+
+function decline(i) {
+    orders[i].status = "Declined";
+    displayAdminReceipt(orders[i]);
+}
+
+function displayAdminReceipt(o) {
+    document.getElementById("adminReceipt").innerHTML = `
+        <h4>Transaction Status</h4>
+        <p><b>Name:</b> ${o.name}</p>
+        <p><b>Car:</b> ${o.car}</p>
+        <p><b>Total:</b> ₱${o.total.toLocaleString()}</p>
+        <p><b>Status:</b> ${o.status}</p>`;
+}
+
+function userLogout() {
+    document.getElementById("mainSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "flex";
+}
+
+function logout() {
+    document.getElementById("adminSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "flex";
+}
+</script>
+</body>
+</html>
