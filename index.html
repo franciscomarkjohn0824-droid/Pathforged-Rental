@@ -1,698 +1,1056 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pathforged Rental</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pathforged Rental System</title>
 <style>
-    body {
-        font-family: "Poppins", sans-serif;
-        background-color: #e3eaf2;
-        color: #0a3d62;
-        margin: 0;
-        padding: 0;
-        text-align: center;
-        overflow-x: hidden;
-    }
+/* Global Styles  */
+:root{
+  --bg:#1f1f1f;
+  --panel: rgba(255,255,255,0.05);
+  --panel-2:#2c2c2c;
+  --accent:#d1d1d1;
+  --text:#f2f2f2;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Poppins",sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,p{margin:0;padding:0}
+button,input,select,textarea{font-family:inherit;outline:none}
 
-    h1 {
-        color: #0a3d62;
-        margin-top: 20px;
-        font-size: 2.2em;
-    }
+/* Layout: pages stack */
+.app { position:relative; min-height:100vh; overflow-x:hidden; }
+.page { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:20px; pointer-events:none; transition: opacity 0.35s ease; opacity:0; }
+.page.show { pointer-events:auto; opacity:1; }
 
-    .container {
-        background-color: #f2f6fa;
-        width: 90%;
-        max-width: 850px;
-        margin: 30px auto;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
+/* Landing Page (Enhanced) */
+#landingPage {
+  display: flex;                  
+  justify-content: center;        
+  align-items: center;           
+  background: radial-gradient(circle at top, #2c2c2c, #1b1b1b 70%);
+  text-align: center;
+  padding: 20px;
+  position: relative;
+  min-height: 100vh;         
+}
 
-    input, select, button {
-        padding: 10px;
-        margin: 5px;
-        border-radius: 8px;
-        border: 1px solid #0a3d62;
-        width: 90%;
-        max-width: 400px;
-        font-size: 15px;
-    }
+.landing-hero {
+  max-width: 600px;
+  width: 100%;
+  padding: 35px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  position: relative;
+}
 
-    button {
-        background-color: #0a3d62;
-        color: white;
-        cursor: pointer;
-        transition: 0.3s;
-    }
 
-    button:hover {
-        background-color: #1a5276;
-        transform: scale(1.05);
-    }
+.landing-hero:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+}
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
+.logo {
+  width: 165px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.55);
+  transition: transform .3s ease;
+}
+.logo:hover { transform: scale(1.07); }
 
-    th, td {
-        border: 1px solid #b0c4de;
-        padding: 8px;
-        text-align: center;
-    }
+.landing-hero h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.landing-hero p {
+  font-size: 1.15rem;
+  max-width: 420px;
+  color: #d5d5d5;
+  line-height: 1.45;
+}
 
-    th {
-        background-color: #b0c4de;
-    }
+.landing-hero span {
+  padding: 14px 32px;
+  border-radius: 40px;
+  background: rgba(255,255,255,0.12);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: .25s;
+  border: 1px solid rgba(255,255,255,0.15);
+}
 
-    .receipt {
-        background: #fff;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 20px;
-        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-        text-align: left;
-    }
+/* About Page */
+#aboutUsPage {
+  padding: 40px 20px;
+  animation: fadeIn 0.6s ease;
+}
+#aboutUsPage h1 {
+  font-size: 2.3rem;
+  font-weight: 700;
+  text-align: center;
+}
+.about-container {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:36px;
+  max-width:1100px;
+  width:100%;
+  margin:32px auto;
+}
 
-    .admin, .about {
-        display: none;
-        margin-top: 40px;
-    }
+.about-box {
+  background: linear-gradient(145deg, #242424, #1b1b1b);
+  padding: 30px;
+  border-radius: 28px;
+  flex:1 1 380px;
+  max-width: 460px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  transition: transform .25s, box-shadow .25s;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.about-box:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.55);
+}
+.about-box h2 {
+  font-size: 1.45rem;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.about-box p {
+  line-height: 1.45;
+  font-size: 1rem;
+  color: #d0d0d0;
+}
 
-    /* ✨ LANDING PAGE ✨ */
-    .landing {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(-45deg, #0a3d62, #1a5276, #154360, #2471a3);
-        background-size: 400% 400%;
-        animation: gradientMove 8s ease infinite;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-        transition: opacity 1s ease, visibility 1s ease;
-        overflow: hidden;
-    }
+/* Interest Page*/
+#interestPage {
+  padding: 40px 20px;
+  animation: fadeIn 0.6s ease;
+}
+#interestPage h1 {
+  text-align: center;
+  font-size: 2.3rem;
+  font-weight: 700;
+}
+.interest-container {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:36px;
+  max-width:1100px;
+  width:100%;
+  margin:32px auto;
+}
 
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+.interest-section {
+  background: linear-gradient(145deg, #242424, #1b1b1b);
+  padding: 30px;
+  border-radius: 28px;
+  flex:1 1 380px;
+  max-width: 460px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  transition: transform .25s, box-shadow .25s;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.interest-section:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.55);
+}
 
-    .landing.fade-out {
-        opacity: 0;
-        visibility: hidden;
-    }
+.checkbox-grid {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:16px;
+}
 
-    .landing-content {
-        text-align: center;
-        position: relative;
-        z-index: 10;
-        animation: floatUp 3s ease-in-out infinite;
-    }
+.checkbox-card {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background: rgba(255,255,255,0.07);
+  padding: 12px 16px;
+  border-radius: 14px;
+  cursor:pointer;
+  transition: background 0.25s, transform 0.25s;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.checkbox-card:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-3px);
+}
 
-    .landing h1 {
-        font-size: 3em;
-        text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        margin: 0;
-        animation: glowText 2s ease-in-out infinite alternate;
-    }
 
-    .landing p {
-        font-size: 1.2em;
-        margin-top: 10px;
-        animation: fadeIn 3s ease-in-out;
-    }
+/*Catalog / Cars */
+.car-grid-container {
+  flex: 1; 
+  display: flex;
+  justify-content: center; 
+}
 
-    @keyframes glowText {
-        from { text-shadow: 0 0 10px #fff, 0 0 20px #76d7c4; }
-        to { text-shadow: 0 0 20px #fff, 0 0 30px #85c1e9; }
-    }
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  align-items: stretch;
+  width: 100%;
+  max-width: 800px; 
+}
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+.car-card {
+  background: var(--panel);
+  padding: 16px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s, box-shadow 0.25s;
+  width: 100%;
+  max-width: 250px;
+}
+.car-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+}
 
-    @keyframes floatUp {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-10px); }
-    }
+.car-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
 
-    /* ✨ MODERN LOGIN PAGE ✨ */
-    .login-page {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle at top right, #2471a3, #0a3d62);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        animation: fadeInLogin 1s ease;
-        z-index: 998;
-    }
+.car-card h3 {
+  margin: 6px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
 
-    @keyframes fadeInLogin {
-        from { opacity: 0; transform: scale(0.98); }
-        to { opacity: 1; transform: scale(1); }
-    }
+.car-card p {
+  margin-bottom: 12px;
+  font-weight: 500;
+}
 
-    .login-box {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(15px);
-        padding: 40px 30px;
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        color: #fff;
-        width: 320px;
-        animation: floatUpLogin 1.5s ease-in-out;
-    }
+/* Responsive  */
+@media (max-width:880px){
+  .sidebar{display:none;}
+  .car-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  .car-grid-container{justify-content:flex-start;}
+}
+.sidebar input#carSearch {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.07);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.sidebar input#carSearch:focus {
+  outline: none;
+  background: rgba(255,255,255,0.12);
+}
 
-    @keyframes floatUpLogin {
-        0% { transform: translateY(20px); opacity: 0; }
-        100% { transform: translateY(0); opacity: 1; }
-    }
+.sidebar {
+  align-self: flex-start; 
+}
 
-    .login-box h2 {
-        margin: 0;
-        font-size: 2em;
-        letter-spacing: 1px;
-        text-shadow: 0 0 10px rgba(255,255,255,0.4);
-    }
 
-    .subtitle {
-        font-size: 0.95em;
-        color: #dfe6e9;
-        margin-bottom: 20px;
-    }
+/*  Login  */
+.form-center{display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:12px;}
+.form-center input{margin:8px 0; padding:10px 12px; border-radius:10px; border:none; background:var(--panel-2); color:var(--text); width:260px; text-align:center;}
 
-    .login-box input {
-        width: 85%;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 8px;
-        border: none;
-        font-size: 1em;
-        text-align: center;
-        outline: none;
-        background: rgba(255, 255, 255, 0.85);
-        color: #0a3d62;
-        transition: 0.3s;
-    }
+/*  Admin Dashboard */
+.admin-container{display:flex; width:100%; height:100%;}
+.sidebar{width:220px; background:var(--panel-2); padding:18px; display:flex; flex-direction:column; gap:12px; box-shadow:2px 0 10px rgba(0,0,0,.5);}
+.sidebar h2{text-align:center;margin-bottom:6px;}
+.sidebar button{width:100%; text-align:left; padding:10px; border-radius:8px; background:transparent; color:var(--text); border:none; cursor:pointer;}
+.sidebar button:hover{background:#ccc; color:#000; transform:translateX(4px);}
+.admin-main{flex:1;padding:18px;}
+.dashboard-cards{display:flex; gap:18px; flex-wrap:wrap; margin-bottom:16px;}
+.card{flex:1 1 210px; background:#3a3a3a; padding:18px; border-radius:12px; text-align:center; box-shadow:0 8px 20px rgba(0,0,0,0.45);}
+.card h3{font-size:1.0rem; margin-bottom:8px; color:#fff;}
+.card p{font-size:1.4rem; font-weight:700;}
 
-    .login-box input:focus {
-        transform: scale(1.03);
-        box-shadow: 0 0 10px #85c1e9;
-    }
+/* Modal  */
+.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.7); z-index:9999; overflow-y:auto;}
+.modal.show{display:flex;}
+.modal-content{background:var(--panel); padding:18px; border-radius:14px; width:92%; max-width:480px; text-align:center;}
+.modal-content input,.modal-content select{width:92%; padding:10px; margin:6px auto; border-radius:8px; border:none; background:#2c2c2c; color:var(--text);}
 
-    .btn-login, .btn-signin, .btn-about {
-        width: 90%;
-        padding: 10px;
-        margin: 8px 0;
-        border: none;
-        border-radius: 10px;
-        font-size: 1em;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
+/* Tables  */
+.table{width:100%; border-collapse:collapse; margin-top:12px;}
+.table th,.table td{border:1px solid #ddd; padding:8px; text-align:center; background:transparent; color:var(--text);}
+.table th{background:#333}
 
-    .btn-login {
-        background: linear-gradient(135deg, #0a3d62, #1a5276);
-        color: #fff;
-    }
-    .btn-login:hover {
-        background: linear-gradient(135deg, #1a5276, #2980b9);
-        transform: scale(1.05);
-    }
+/*  Small helpers  */
+.topbar{width:100%; max-width:1100px; margin:12px auto; display:flex; justify-content:space-between; align-items:center;}
+.center{margin:0 auto; text-align:center;}
+.kv{font-weight:700;}
+.notice{background:#2b2b2b; padding:10px; border-radius:8px; margin:8px 0; max-width:1100px;}
 
-    .btn-signin {
-        background: linear-gradient(135deg, #16a085, #1abc9c);
-        color: #fff;
-    }
-    .btn-signin:hover {
-        background: linear-gradient(135deg, #1abc9c, #48c9b0);
-        transform: scale(1.05);
-    }
+/* Responsive */
+@media (max-width:880px){
+  .sidebar{display:none;}
+  .car-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+  .about-container,.interest-container{flex-direction:column;align-items:center;}
+  .about-box,.interest-section{max-width:95%;}
+  .landing-hero h1{font-size:1.9rem;}
+  .landing-hero p{max-width:95%;font-size:1rem;}
+}
 
-    .btn-about {
-        background: transparent;
-        border: 2px solid #fff;
-        color: #fff;
-    }
-    .btn-about:hover {
-        background: rgba(255,255,255,0.2);
-    }
-
-    .divider {
-        margin: 15px auto;
-        width: 60%;
-        height: 1px;
-        background: rgba(255,255,255,0.3);
-    }
-
-    /* ABOUT US PAGE STYLE*/
-    .about {
-        display: none;
-        background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        width: 80%;
-        max-width: 700px;
-        margin: 50px auto;
-        padding: 30px;
-        color: #0a3d62;
-        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    }
-
-    .about h2 {
-        color: #0a3d62;
-    }
+/*  Modern Button Styles  */
+button {background: #d1d1d1;color: #1f1f1f;border: none;border-radius: 12px;padding: 10px 20px;font-weight: 600;font-size: 0.95rem;cursor: pointer;transition: all 0.25s ease;box-shadow: 0 4px 12px rgba(0,0,0,0.2);}
+button:hover {background: #e0e0e0;transform: translateY(-2px) scale(1.03);box-shadow: 0 6px 18px rgba(0,0,0,0.25);}
+button:active {transform: translateY(0) scale(0.98);box-shadow: 0 3px 10px rgba(0,0,0,0.2);}
+button:disabled {background: #aaa;cursor: not-allowed;opacity: 0.7;box-shadow: none;}
+.table button, .modal-content button {padding: 6px 12px;font-size: 0.85rem;border-radius: 8px;}
+.sidebar button { transition: all 0.25s ease; }
 
 </style>
 </head>
 <body>
-<!-- LANDING PAGE  -->
-<div class="landing" id="landingPage" onclick="enterSite()">
-    <div class="landing-content">
-        <img src="carcar.jpg" alt="Pathforged Rentals Logo" class="landing-logo">
+<div class="app">
 
-        <p class="landing-tagline">Your trusted car rental service in the Philippines </p>
+  <!-- LANDING PAGE -->
+  <section class="page show" id="landingPage">
+    <div class="landing-hero" onclick="navigateTo('aboutUsPage')">
+      <img src="carcar.jpg" class="logo" alt="Logo">
+      <h1>PathForged Rentals</h1>
+      <p>Experience premium car rentals with ease and convenience.</p>
+      <span>Tap Anywhere</span>
+    </div>
+  </section>
 
-        <div class="company-description">
-            <p><b>Pathforged Rentals</b> is a proudly Philippine based car rental company offering reliable and affordable vehicles for every journey. 
-            Our mission is to make every road safer, smoother, and more convenient through trust, efficiency, and exceptional service. 
-            Whether you’re exploring the city or traveling long distances, we forge your path with comfort and reliability.</p>
+  <!-- ABOUT PAGE -->
+  <section class="page" id="aboutUsPage">
+    <div style="width:100%;max-width:1100px;margin:22px auto">
+      <h1>About Us</h1>
+      <div class="about-container">
+        <div class="about-box">
+          <h2>Company Profile</h2>
+          <p><strong>Company Name:</strong> PathForged Rentals</p>
+          <p><strong>Owners:</strong> Hernaez Jay-ar, Morales Gerlyn Nathalie, Francisco Mark John</p>
+          <p><strong>Type of Business:</strong> Car Rental Services</p>
+          <p><strong>Location:</strong> Pineda Street, Block 2 Lot 3, Pineda Pasig City</p>
         </div>
-
-        <p class="tap-hint">Tap anywhere to enter</p>
+        <div class="about-box">
+          <h2>Company Overview</h2>
+          <p><strong>Mission:</strong> Provide safe, reliable, and affordable car rental solutions.</p>
+          <p><strong>Vision:</strong> Become the most trusted car rental brand in the Philippines.</p>
+        </div>
+      </div>
+      <div class="center"><button onclick="navigateTo('interestPage')">Next</button></div>
     </div>
+  </section>
 
-    <div class="landing-footer">
-        © 2025 <span>Pathforged Rentals</span> | Driven by Passion and Service
+  <!-- INTEREST PAGE -->
+  <section class="page" id="interestPage">
+    <div style="width:100%;max-width:1100px;margin:22px auto">
+      <h1>Select Your Interest</h1>
+      <div class="interest-container">
+        <div class="interest-section">
+          <h2>Your Kind of Ride:</h2>
+          <div class="checkbox-grid">
+            <label class="checkbox-card"><input type="checkbox" name="rideKind" value="Solo Trip"> Solo Trip</label>
+            <label class="checkbox-card"><input type="checkbox" name="rideKind" value="Family Trip"> Family Trip</label>
+            <label class="checkbox-card"><input type="checkbox" name="rideKind" value="Business / Work Use"> Business / Work Use</label>
+            <label class="checkbox-card"><input type="checkbox" name="rideKind" value="Leisure / Weekend Getaways"> Leisure / Weekend Getaways</label>
+          </div>
+        </div>
+        <div class="interest-section">
+          <h2>Style of Ride:</h2>
+          <div class="checkbox-grid">
+            <label class="checkbox-card"><input type="checkbox" name="rideStyle" value="Modern"> Modern</label>
+            <label class="checkbox-card"><input type="checkbox" name="rideStyle" value="Traditional"> Traditional</label>
+          </div>
+        </div>
+      </div>
+      <div class="center"><button onclick="navigateTo('loginPage')">Get In</button></div>
     </div>
-</div>
+  </section>
 
-
-<style>
-/*  LANDING PAGE  */
-.landing {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(120deg, #0a3d62, #1a5276, #2471a3, #5dade2, #1f618d);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* pushes content up */
-    align-items: center;
-    z-index: 999;
-    transition: opacity 1s ease, visibility 1s ease;
-    overflow: hidden;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-}
-
-.landing.fade-out {
-    opacity: 0;
-    visibility: hidden;
-}
-
-.landing-content {
-    margin-top: 10vh; /* pushes content higher (was centered before) */
-    text-align: center;
-    position: relative;
-    z-index: 10;
-    max-width: 700px;
-    animation: fadeInUp 2s ease forwards;
-}
-
-.landing-logo {
-    width: 230px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-    margin-bottom: 10px;
-    animation: fadeIn 2s ease;
-}
-
-.landing-tagline {
-    font-size: 1.1em;
-    margin-top: 5px;
-    color: #eaf6ff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-}
-
-/* Smaller company description */
-.company-description {
-    margin-top: 8px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 15px 20px;
-    max-width: 600px;
-    color: #f0f8ff;
-    font-size: 0.9em;
-    line-height: 1.5;
-    text-shadow: 0 0 8px rgba(0,0,0,0.3);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    animation: fadeInUp 3s ease forwards;
-}
-
-.tap-hint {
-    margin-top: 25px;
-    font-size: 0.95em;
-    color: rgba(255,255,255,0.85);
-    animation: pulse 2s infinite;
-}
-
-.landing-footer {
-    position: absolute;
-    bottom: 50px;
-    font-size: 0.9em;
-    color: rgba(255,255,255,0.8);
-    animation: fadeIn 3s ease;
-}
-
-.landing-footer span {
-    font-weight: bold;
-    color: #fff;
-}
-
-/* Animations */
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-@keyframes fadeInUp {
-    0% { opacity: 0; transform: translateY(30px); }
-    100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse {
-    0% { opacity: 0.8; }
-    50% { opacity: 1; }
-    100% { opacity: 0.8; }
-}
-
-</style>
-
-</div>
-<!--  MODERN LOGIN SECTION  -->
-<div class="login-page" id="loginSection" style="display:none;">
-  <div class="login-box">
-      <h2>Welcome</h2>
-      <p class="subtitle">Log in or sign up to begin your journey </p>
-      <input type="text" id="username" placeholder="Username">
-      <input type="password" id="password" placeholder="Password">
-      <button class="btn-login" onclick="login()">Login</button>
-      <button class="btn-signin" onclick="signin()">Sign In</button>
-      <div class="divider"></div>
-      <button class="btn-about" onclick="showAbout()">About Us</button>
+  <!-- LOGIN PAGE -->
+  <section class="page" id="loginPage">
+    <div class="form-center">
+      <h2>Login</h2>
+      <input id="username" placeholder="Username" />
+      <input id="password" placeholder="Password" type="password" />
+      <div style="display:flex;gap:8px;">
+        <button onclick="login('user')">Login as User</button>
+        <button onclick="login('admin')">Login as Admin</button>
+      </div>
+      <div style="margin-top:6px"><button onclick="forgotPassword()">Forgot Password</button></div>
+      
+    </div>
+  </section>
+<!-- FORGOT PASSWORD MODAL -->
+<div class="modal" id="forgotPasswordModal" aria-hidden="true">
+  <div class="modal-content">
+    <h3>Reset Password</h3>
+    <input id="fpUsername" placeholder="Enter your username" />
+    <div id="fpUsernameError" style="color:#f66;font-size:0.85rem;margin:4px 0;"></div>
+    
+    <input id="fpNewPassword" type="password" placeholder="Enter new password" />
+    <div id="fpNewPasswordError" style="color:#f66;font-size:0.85rem;margin:4px 0;"></div>
+    
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:center;">
+      <button onclick="resetPassword()">Reset</button>
+      <button onclick="closeForgotPasswordModal()">Cancel</button>
+    </div>
   </div>
 </div>
 
-<!-- ABOUT US SECTION  -->
-<div class="container about" id="aboutSection">
-    <h2>About Pathforged Rental</h2>
-    <p><b>Company Name:</b> Pathforged Rental</p>
-    <p><b>Owners:</b> Henaez Jar-ar, Morales Gerlyn Nathalie, Francisco Mark John</p>
-    <p><b>Profile:</b> Pathforged Rental is a Philippine-based car rental company providing reliable and affordable vehicles. We aim to make every travel path convenient and secure through trust, safety, and efficiency.</p>
-    <button onclick="backToLogin()">Back</button>
+
+  <!-- CAR CATALOG (USER) WITH SIDEBAR FILTER -->
+  <section class="page" id="carCatalog">
+    <div class="topbar">
+      <div><h2>Available Cars</h2></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="notice">Signed in as: <span class="kv" id="userGreeting">Guest</span></div>
+        <button onclick="navigateTo('loginPage')">Switch Account</button>
+      </div>
+    </div>
+
+    <!-- Sidebar + Car Grid -->
+<div style="display:flex; justify-content:center; max-width:1100px; margin:18px auto; gap:2px;">
+  <!-- Sidebar Filter (Left Side) -->
+  <aside class="sidebar">
+    <h2>Filter Vehicles</h2>
+    <label class="checkbox-card"><input type="radio" name="carTypeFilter" value="all" checked onchange="applyCarFilter()"> All</label>
+    <label class="checkbox-card"><input type="radio" name="carTypeFilter" value="modern" onchange="applyCarFilter()"> Modern</label>
+    <label class="checkbox-card"><input type="radio" name="carTypeFilter" value="traditional" onchange="applyCarFilter()"> Traditional</label>
+  </aside>
+<div style="max-width:400px; margin:0 auto 18px auto; display:flex; justify-content:center;">
+  <input type="text" id="carSearch" placeholder="Search cars..." 
+         style="padding:6px 10px; border-radius:8px; border:none; width:100%; max-width:300px; 
+                height:32px; box-sizing:border-box; background:var(--panel-2); color:var(--text); font-size:0.9rem;"
+         oninput="applyCarFilter()">
 </div>
 
-<!-- MAIN USER SECTION -->
-<div class="container" id="mainSection" style="display:none;">
-    <h2>Car Rental Form</h2>
-    <input type="text" id="name" placeholder="Full Name">
-    <input type="text" id="address" placeholder="Address">
-    <input type="text" id="contact" placeholder="Contact Number">
-    <input type="number" id="age" placeholder="Age">
-    <select id="car">
-        <option value="">-- Select Car --</option>
-        <option value="Toyota Vios">Toyota Vios - ₱2500/day</option>
-        <option value="Honda City">Honda City - ₱2800/day</option>
-        <option value="Mitsubishi Xpander">Mitsubishi Xpander - ₱3000/day</option>
-        <option value="Ford Ranger">Ford Ranger - ₱3500/day</option>
-    </select>
-    <input type="number" id="days" placeholder="Number of Days">
-    <select id="destination">
-        <option value="">-- Select Destination --</option>
-        <option value="Manila">Manila</option>
-        <option value="Cebu">Cebu</option>
-        <option value="Davao">Davao</option>
-        <option value="Baguio">Baguio</option>
-    </select><br>
-    <button onclick="addOrder()">Add Order</button>
-    <button onclick="updateOrder()">Edit Order</button>
-    <button onclick="userLogout()">Logout</button>
 
-    <h3>Orders</h3>
-    <table id="orderTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Car</th>
-                <th>Days</th>
-                <th>Destination</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
-    <div class="receipt" id="receipt"></div>
+  <!-- Car Grid (Centered) -->
+  <div class="car-grid-container">
+    <div class="car-grid" id="carGrid"></div>
+  </div>
 </div>
 
-<!-- ADMIN SECTION -->
-<div class="container admin" id="adminSection" style="display:none;">
-    <h2>Admin Dashboard</h2>
-    <table id="adminTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Car</th>
-                <th>Days</th>
-                <th>Destination</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-        </thead>
+    <div style="width:100%;max-width:1100px;margin:8px auto">
+      <h2>Your Bookings</h2>
+      <table class="table" id="userBookingsTable">
+        <thead><tr><th>Car</th><th>Days</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
         <tbody></tbody>
-    </table>
-    <div class="receipt" id="adminReceipt"></div>
-    <button onclick="logout()">Logout</button>
+      </table>
+    </div>
+    <div class="center" style="margin:18px"><button onclick="logout()">Logout</button></div>
+  </section>
+
+  <!-- ADMIN DASHBOARD -->
+  <section class="page" id="adminHome">
+    <div class="admin-container">
+      <aside class="sidebar">
+        <h2>Admin Panel</h2>
+        <button onclick="showAdminSection('dashboard')">Dashboard</button>
+        <button onclick="showAdminSection('bookings')">Bookings</button>
+        <button onclick="logout()">Logout</button>
+      </aside>
+      <main class="admin-main">
+        <div id="dashboard" class="admin-section">
+          <div class="dashboard-cards">
+            <div class="card"><h3>Total Users</h3><p id="totalUsers">0</p></div>
+            <div class="card"><h3>Total Bookings</h3><p id="totalBookings">0</p></div>
+            <div class="card"><h3>Pending</h3><p id="pendingCount">0</p></div>
+            <div class="card"><h3>Revenue (₱)</h3><p id="totalRevenue">0</p></div>
+          </div>
+        </div>
+        <div id="bookings" class="admin-section" style="display:none">
+          <h3>All Bookings</h3>
+          <table class="table" id="adminBookingsTable">
+            <thead><tr><th>User</th><th>Car</th><th>Age</th><th>Address</th><th>Email</th><th>Contact</th><th>Days</th><th>Total</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <!-- BOOKING MODAL -->
+  <div class="modal" id="carModal" aria-hidden="true">
+    <div class="modal-content">
+      <h3 id="modalCarName">Book Car</h3>
+      <form id="bookingForm" onsubmit="event.preventDefault(); confirmBooking();">
+        <input id="bookName" placeholder="Full Name" required />
+        <input id="bookAge" type="number" placeholder="Age" min="18" required />
+        <input id="bookAddress" placeholder="Address" required />
+        <input id="bookLocation" placeholder="Location" required />
+        <input id="bookEmail" type="email" placeholder="Email" required />
+        <input id="bookContact" placeholder="Contact Number" required />
+        <input id="bookDays" type="number" placeholder="Number of Days" min="1" required />
+        <select id="bookPayment">
+          <option value="Cash">Cash</option>
+          <option value="Gcash">Gcash</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+        <div style="margin-top:12px; display:flex; gap:8px; justify-content:center;">
+          <button type="submit">Confirm Booking</button>
+          <button type="button" onclick="closeModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RECEIPT MODAL -->
+  <div class="modal" id="receiptModal" aria-hidden="true">
+    <div class="modal-content" id="receiptContent">
+      <h3>Booking Receipt</h3>
+      <div id="receiptBody" style="text-align:left;margin-top:10px"></div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+        <button onclick="printReceiptWindow()">Print</button>
+        <button onclick="closeReceipt()">Close</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-let orders = [];
+  
+/* State & Data  */
+const cars = [
+  {
+    name:'Tricycle',
+    price:500,
+    img:'Tricycle.jpg',
+    features:[
+      'Seats: 3 passengers',
+      'Engine: 150cc',
+      'Fuel: Gasoline',
+      'Transmission: Manual',
+      'Ideal for short city trips'
+    ]
+  },
+  {
+    name:'BMW 5 Series',
+    price:5000,
+    img:'BMW 5 series.jpg',
+    features:[
+      'Seats: 5 passengers',
+      'Engine: 3.0L Turbocharged',
+      'Fuel: Petrol',
+      'Transmission: Automatic',
+      'Luxury sedan with advanced safety features'
+    ]
+  },
+  {
+    name:'BMW 3 Series',
+    price:4500,
+    img:'BMW 3 Series.jpg',
+    features:[
+      'Seats: 5 passengers',
+      'Engine: 2.0L Turbo',
+      'Fuel: Petrol',
+      'Transmission: Automatic',
+      'Sporty sedan with comfortable ride'
+    ]
+  },
+  {
+    name:'Honda Civic',
+    price:1800,
+    img:'honda Civic.jpg',
+    features:[
+      'Seats: 5 passengers',
+      'Engine: 1.8L',
+      'Fuel: Petrol',
+      'Transmission: Automatic',
+      'Compact sedan suitable for city driving'
+    ]
+  },
+  {
+    name:'Honda City',
+    price:1700,
+    img:'Honda City.jpg',
+    features:[
+      'Seats: 5 passengers',
+      'Engine: 1.5L',
+      'Fuel: Petrol',
+      'Transmission: Automatic',
+      'Economical and efficient compact car'
+    ]
+  },
+  {
+    name:'Mercedes Benz V-Class',
+    price:6000,
+    img:'Mercedes Benz V Class.jpg',
+    features:[
+      'Seats: 7 passengers',
+      'Engine: 2.2L Diesel',
+      'Fuel: Diesel',
+      'Transmission: Automatic',
+      'Luxury MPV, perfect for family or business trips'
+    ]
+  },
+  {
+    name:'Mercedes Benz GLE',
+    price:7000,
+    img:'Mercedes Benz GLE.jpg',
+    features:[
+      'Seats: 5 passengers',
+      'Engine: 3.0L V6',
+      'Fuel: Petrol',
+      'Transmission: Automatic',
+      'Luxury SUV with off-road capability'
+    ]
+  },
+  {
+    name:'Jeepney',
+    price:1000,
+    img:'Jeep.jpg',
+    features:[
+      'Seats: 10-12 passengers',
+      'Engine: 4-cylinder',
+      'Fuel: Diesel',
+      'Transmission: Manual',
+      'Iconic Philippine transport, ideal for group trips'
+    ]
+  }
+];
+
+
+let bookings = JSON.parse(localStorage.getItem('bookings')||'[]'); 
+let currentUser = '';
 let editIndex = -1;
+let selectedCarIndex = null;
+let currentReceiptIndex = null;
 
-function enterSite() {
-    const landing = document.getElementById('landingPage');
-    landing.classList.add('fade-out');
-    setTimeout(() => {
-        landing.style.display = 'none';
-        document.getElementById("loginSection").style.display = "flex";
-    }, 1000);
+/* Page navigation */
+function navigateTo(targetId){
+  const current = document.querySelector('.page.show');
+  const target = document.getElementById(targetId);
+  if(!target) return;
+  if(current === target) return;
+  if(current) current.classList.remove('show');
+  // small timeout to ensure CSS transition
+  setTimeout(()=> {
+    target.classList.add('show');
+    window.scrollTo(0,0);
+  }, 10);
 }
 
-function login() {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-
-    if (!user || !pass) return alert("Enter username and password");
-
-    if (user === "admin" && pass === "admin123") {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("adminSection").style.display = "block";
-        loadAdminTable();
+/* Login / Logout*/
+function login(type){
+  const username = (document.getElementById('username').value||'').trim();
+  const password = (document.getElementById('password').value||'').trim();
+  if(type==='admin'){
+    if(username==='admin' && password==='admin123'){
+      currentUser = 'admin';
+      document.getElementById('userGreeting').innerText = 'Admin';
+      navigateTo('adminHome');
+      renderAdminDashboard();
     } else {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("mainSection").style.display = "block";
+      alert('Invalid admin credentials');
     }
+    return;
+  }
+  // user: any username/password allowed
+  if(!username || !password){ alert('Please enter username and password'); return; }
+  currentUser = username;
+  document.getElementById('userGreeting').innerText = currentUser;
+  navigateTo('carCatalog');
+  renderCarCatalog();
+  renderUserBookings();
 }
 
-function signin() { alert("Account successfully created!"); }
-function backToLogin() {
-    document.getElementById("aboutSection").style.display = "none";
-    document.getElementById("loginSection").style.display = "flex";
-}
-function showAbout() {
-    document.getElementById("loginSection").style.display = "none";
-    document.getElementById("aboutSection").style.display = "block";
+function logout(){
+  currentUser = '';
+  document.getElementById('username').value='';
+  document.getElementById('password').value='';
+  document.getElementById('userGreeting').innerText = 'Guest';
+  navigateTo('landingPage');
 }
 
-function getCarPrice(car) {
-    switch(car) {
-        case "Toyota Vios": return 2500;
-        case "Honda City": return 2800;
-        case "Mitsubishi Xpander": return 3000;
-        case "Ford Ranger": return 3500;
-        default: return 0;
+/*Forgot password*/
+function forgotPassword() {
+  const modal = document.getElementById('forgotPasswordModal');
+  document.getElementById('fpUsername').value = '';
+  document.getElementById('fpNewPassword').value = '';
+  document.getElementById('fpUsernameError').innerText = '';
+  document.getElementById('fpNewPasswordError').innerText = '';
+  modal.classList.add('show');
+
+  // Auto-focus username input
+  setTimeout(() => {
+    document.getElementById('fpUsername').focus();
+  }, 50);
+}
+
+function closeForgotPasswordModal() {
+  document.getElementById('forgotPasswordModal').classList.remove('show');
+}
+
+function resetPassword() {
+  const username = (document.getElementById('fpUsername').value||'').trim();
+  const newPass = (document.getElementById('fpNewPassword').value||'').trim();
+  let valid = true;
+
+  // Clear previous errors
+  document.getElementById('fpUsernameError').innerText = '';
+  document.getElementById('fpNewPasswordError').innerText = '';
+
+  if (!username) {
+    document.getElementById('fpUsernameError').innerText = "Username is required";
+    valid = false;
+  }
+  if (!newPass) {
+    document.getElementById('fpNewPasswordError').innerText = "New password is required";
+    valid = false;
+  }
+  if (!valid) return;
+
+  if (username.toLowerCase() === "admin") {
+    localStorage.setItem("adminPassword", newPass);
+    alert("Admin password updated successfully!");
+  } else {
+    let users = JSON.parse(localStorage.getItem("users") || "{}");
+    users[username] = newPass;
+    localStorage.setItem("users", JSON.stringify(users));
+    alert(`Password for "${username}" updated successfully!`);
+  }
+
+  closeForgotPasswordModal();
+}
+
+
+/* Render Catalog  */
+function renderCarCatalog() {
+  applyCarFilter(); 
+}
+function applyCarFilter() {
+  const filter = document.querySelector('input[name="carTypeFilter"]:checked').value;
+  const searchTerm = (document.getElementById('carSearch').value || '').toLowerCase();
+  const grid = document.getElementById('carGrid');
+  grid.innerHTML = '';
+
+  cars.forEach((car, i) => {
+    const isTraditional = car.name === 'Jeepney' || car.name === 'Tricycle';
+
+    if(filter === 'modern' && isTraditional) return;
+    if(filter === 'traditional' && !isTraditional) return;
+    if(searchTerm && !car.name.toLowerCase().includes(searchTerm)) return;
+
+    const card = document.createElement('div');
+    card.className = 'car-card';
+    card.innerHTML = `
+      <img src="${car.img}" alt="${car.name} image" onerror="this.style.opacity=.35">
+      <h3>${car.name}</h3>
+      <p style="margin:8px 0">₱${car.price}/day</p>
+      <div style="display:flex;justify-content:center;gap:8px">
+        <button onclick="openBookingModal(${i})">Book</button>
+        <button onclick="showDetails(${i})">Details</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+/*  Car details (modal reuse)*/
+function showDetails(i){
+  const car = cars[i];
+  if(!car){ alert('Car not found'); return; }
+
+  const featureList = (car.features||[]).map(f=>`<li>${escapeHtml(f)}</li>`).join('');
+
+  const html = `
+    <div style="text-align:left">
+      <h3>${escapeHtml(car.name)}</h3>
+      <img src="${car.img}" alt="${escapeHtml(car.name)}" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin:8px 0" onerror="this.style.opacity=.35">
+      <p><b>Price:</b> ₱${car.price}/day</p>
+      <p><b>Features:</b></p>
+      <ul>${featureList}</ul>
+      <div style="margin-top:12px;text-align:center">
+        <button onclick="openBookingModal(${i})">Book This Car</button>
+        <button onclick="closeDetails()">Close</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('receiptBody').innerHTML = html;
+  openReceiptModal();
+}
+
+function closeDetails(){ closeReceipt(); }
+
+/*  Booking modal helpers */
+function openBookingModal(carIndex, index=-1){
+  selectedCarIndex = carIndex;
+  editIndex = index;
+  document.getElementById('modalCarName').innerText = cars[carIndex].name;
+  document.getElementById('carModal').classList.add('show');
+  // populate if editing
+  if(index > -1 && bookings[index]){
+    const b = bookings[index];
+    document.getElementById('bookName').value = b.user;
+    document.getElementById('bookAge').value = b.age;
+    document.getElementById('bookAddress').value = b.address;
+    document.getElementById('bookLocation').value = b.location;
+    document.getElementById('bookEmail').value = b.email;
+    document.getElementById('bookContact').value = b.contact;
+    document.getElementById('bookDays').value = b.days;
+    document.getElementById('bookPayment').value = b.payment || 'Cash';
+  } else {
+    ['bookName','bookAge','bookAddress','bookLocation','bookEmail','bookContact','bookDays'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('bookPayment').value='Cash';
+  }
+}
+function closeModal(){
+  document.getElementById('carModal').classList.remove('show');
+  editIndex = -1;
+  selectedCarIndex = null;
+}
+
+/* Validation  */
+function validateBookingInputs(){
+  const name = (document.getElementById('bookName').value||'').trim();
+  const age = parseInt(document.getElementById('bookAge').value||'0');
+  const addr = (document.getElementById('bookAddress').value||'').trim();
+  const loc = (document.getElementById('bookLocation').value||'').trim();
+  const email = (document.getElementById('bookEmail').value||'').trim();
+  const contact = (document.getElementById('bookContact').value||'').trim();
+  const days = parseInt(document.getElementById('bookDays').value||'0');
+
+  if(!name){ alert('Full Name is required'); return false; }
+  if(!/^[a-zA-Z\s]+$/.test(name)){ alert('Name must contain letters and spaces only'); return false; }
+  if(!age){ alert('Age is required'); return false; }
+  if(age < 18){ alert('Age must be 18 or older'); return false; }
+  if(!addr){ alert('Address is required'); return false; }
+  if(!loc){ alert('Location is required'); return false; }
+  if(!email){ alert('Email required'); return false; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('Enter a valid email'); return false; }
+  if(!contact){ alert('Contact is required'); return false; }
+  // Philippines mobile pattern starting with 09 and 11 digits total
+  if(!/^09\d{9}$/.test(contact)){ alert('Enter a valid contact (must start with 09 and be 11 digits)'); return false; }
+  if(!days || days < 1){ alert('Days must be at least 1'); return false; }
+  return true;
+}
+
+/*  Confirm booking (create / edit)*/
+function confirmBooking(){
+  if(!validateBookingInputs()) return;
+  if(selectedCarIndex===null){ alert('No car selected'); return; }
+
+  const name = (document.getElementById('bookName').value||'').trim();
+  const age = parseInt(document.getElementById('bookAge').value||'0');
+  const addr = (document.getElementById('bookAddress').value||'').trim();
+  const loc = (document.getElementById('bookLocation').value||'').trim();
+  const email = (document.getElementById('bookEmail').value||'').trim();
+  const contact = (document.getElementById('bookContact').value||'').trim();
+  const days = parseInt(document.getElementById('bookDays').value||'0');
+  const payment = (document.getElementById('bookPayment').value||'Cash');
+
+  const price = (cars.find(c=>c.name===cars[selectedCarIndex].name)||{price:0}).price;
+  const total = price * days;
+
+  const booking = {
+    user: name,
+    car: cars[selectedCarIndex].name,
+    age: age,
+    address: addr,
+    location: loc,
+    email: email,
+    contact: contact,
+    days: days,
+    total: total,
+    status: 'Pending',
+    payment: payment,
+    createdAt: new Date().toISOString()
+  };
+
+  if(editIndex > -1 && bookings[editIndex]){
+    bookings[editIndex] = booking;
+    alert('Booking updated');
+  } else {
+    bookings.push(booking);
+    alert('Booking confirmed');
+  }
+  localStorage.setItem('bookings', JSON.stringify(bookings));
+  closeModal();
+  renderUserBookings();
+  renderAdminDashboard();
+}
+
+/* Render user bookings (use global index) */
+function renderUserBookings(){
+  const tbody = document.querySelector('#userBookingsTable tbody');
+  tbody.innerHTML = '';
+  bookings.forEach((b,i)=>{
+    if(b.user === currentUser){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(b.car)}</td>
+        <td>${b.days}</td>
+        <td>₱${b.total}</td>
+        <td>${b.status}</td>
+        <td>
+          ${b.status==='Approved'?`<button onclick="openReceipt(${i})">Receipt</button>`:''}
+          <button onclick="openBookingModalByIndex(${i})">Edit</button>
+          <button onclick="removeBooking(${i})">Remove</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
     }
+  });
 }
 
-function addOrder() {
-    const name = document.getElementById("name").value;
-    const address = document.getElementById("address").value;
-    const contact = document.getElementById("contact").value;
-    const age = document.getElementById("age").value;
-    const car = document.getElementById("car").value;
-    const days = parseInt(document.getElementById("days").value);
-    const destination = document.getElementById("destination").value;
-
-    if (!name || !address || !contact || !age || !car || !days || !destination)
-        return alert("Please fill all fields!");
-
-    const total = getCarPrice(car) * days;
-    const order = { name, address, contact, age, car, days, destination, total, status: "Pending" };
-    orders.push(order);
-
-    displayOrders();
-    printReceipt(order);
-    clearInputs();
+/* helper to open booking modal for editing using global index */
+function openBookingModalByIndex(globalIndex){
+  const carName = bookings[globalIndex] && bookings[globalIndex].car;
+  const carIndex = cars.findIndex(c=>c.name===carName);
+  if(carIndex === -1){ openBookingModal(0, globalIndex); } 
+  else openBookingModal(carIndex, globalIndex);
 }
 
-function displayOrders() {
-    const tbody = document.querySelector("#orderTable tbody");
-    tbody.innerHTML = "";
-    orders.forEach((o, i) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${o.name}</td>
-                <td>${o.car}</td>
-                <td>${o.days}</td>
-                <td>${o.destination}</td>
-                <td>₱${o.total.toLocaleString()}</td>
-                <td>
-                    <button onclick="editRow(${i})">Edit</button>
-                    <button onclick="deleteRow(${i})">Delete</button>
-                </td>
-            </tr>`;
-    });
-    loadAdminTable();
+/* Admin dashboard render  */
+function renderAdminDashboard(){
+  document.getElementById('totalUsers').innerText = new Set(bookings.map(b=>b.user)).size;
+  document.getElementById('totalBookings').innerText = bookings.length;
+  const pending = bookings.filter(b=>b.status==='Pending').length;
+  document.getElementById('pendingCount').innerText = pending;
+  const revenue = bookings.filter(b=>b.status==='Approved').reduce((s,b)=>s+b.total,0);
+  document.getElementById('totalRevenue').innerText = revenue;
+
+  renderAdminBookings();
 }
 
-function editRow(i) {
-    const o = orders[i];
-    document.getElementById("name").value = o.name;
-    document.getElementById("address").value = o.address;
-    document.getElementById("contact").value = o.contact;
-    document.getElementById("age").value = o.age;
-    document.getElementById("car").value = o.car;
-    document.getElementById("days").value = o.days;
-    document.getElementById("destination").value = o.destination;
-    editIndex = i;
+function renderAdminBookings(){
+  const tbody = document.querySelector('#adminBookingsTable tbody');
+  tbody.innerHTML = '';
+  bookings.forEach((b,i)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(b.user)}</td>
+      <td>${escapeHtml(b.car)}</td>
+      <td>${b.age}</td>
+      <td>${escapeHtml(b.address)}</td>
+      <td>${escapeHtml(b.location)}</td>
+      <td>${escapeHtml(b.email)}</td>
+      <td>${escapeHtml(b.contact)}</td>
+      <td>${b.days}</td>
+      <td>₱${b.total}</td>
+      <td>${b.status}</td>
+      <td>
+        ${b.status==='Pending'?`<button onclick="approveBooking(${i})">Approve</button><button onclick="rejectBooking(${i})">Reject</button>`:''}
+        <button onclick="openReceipt(${i})">Receipt</button>
+        <button onclick="removeBooking(${i})">Delete</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-function updateOrder() {
-    if (editIndex === -1) return alert("Select an order to edit first!");
-    const name = document.getElementById("name").value;
-    const address = document.getElementById("address").value;
-    const contact = document.getElementById("contact").value;
-    const age = document.getElementById("age").value;
-    const car = document.getElementById("car").value;
-    const days = parseInt(document.getElementById("days").value);
-    const destination = document.getElementById("destination").value;
-    const total = getCarPrice(car) * days;
-    orders[editIndex] = { name, address, contact, age, car, days, destination, total, status: "Pending" };
-    displayOrders();
-    clearInputs();
-    editIndex = -1;
+/* Approve / Reject / Remove */
+function approveBooking(i){
+  if(!bookings[i]) return;
+  bookings[i].status = 'Approved';
+  localStorage.setItem('bookings', JSON.stringify(bookings));
+  renderAdminDashboard();
+  renderUserBookings();
+}
+function rejectBooking(i){
+  if(!bookings[i]) return;
+  bookings[i].status = 'Rejected';
+  localStorage.setItem('bookings', JSON.stringify(bookings));
+  renderAdminDashboard();
+  renderUserBookings();
+}
+function removeBooking(i){
+  if(!bookings[i]) return;
+  if(!confirm('Remove this booking?')) return;
+  bookings.splice(i,1);
+  localStorage.setItem('bookings', JSON.stringify(bookings));
+  renderAdminDashboard();
+  renderUserBookings();
 }
 
-function deleteRow(i) {
-    orders.splice(i, 1);
-    displayOrders();
+/* Receipt / Print  */
+function openReceipt(i){
+  if(!bookings[i]) return;
+  currentReceiptIndex = i;
+  const b = bookings[i];
+  const body = `
+    <div style="font-size:14px;line-height:1.4">
+      <p><b>Name:</b> ${escapeHtml(b.user)}</p>
+      <p><b>Car:</b> ${escapeHtml(b.car)}</p>
+      <p><b>Location:</b> ${escapeHtml(b.location)}</p>
+      <p><b>Days:</b> ${b.days}</p>
+      <p><b>Total:</b> ₱${b.total}</p>
+      <p><b>Payment:</b> ${escapeHtml(b.payment)}</p>
+      <p><b>Status:</b> ${escapeHtml(b.status)}</p>
+      <p><b>Email:</b> ${escapeHtml(b.email)}</p>
+      <p><b>Contact:</b> ${escapeHtml(b.contact)}</p>
+      <p style="margin-top:8px;color:#ccc;font-size:.9rem">Transaction Date: ${new Date(b.createdAt||Date.now()).toLocaleString()}</p>
+    </div>
+  `;
+  document.getElementById('receiptBody').innerHTML = body;
+  openReceiptModal();
+}
+function openReceiptModal(){ document.getElementById('receiptModal').classList.add('show'); }
+function closeReceipt(){ document.getElementById('receiptModal').classList.remove('show'); currentReceiptIndex=null; }
+function printReceiptWindow(){
+  const idx = currentReceiptIndex;
+  if(idx===null || !bookings[idx]){ alert('No receipt selected'); return; }
+  const html = document.getElementById('receiptBody').innerHTML;
+  const w = window.open('','_blank','width=700,height=800');
+  w.document.write(`<html><head><title>Receipt</title></head><body style="font-family:Arial,Helvetica,sans-serif;padding:20px">${html}</body></html>`);
+  w.document.close();
+  w.print();
 }
 
-function clearInputs() {
-    document.getElementById("name").value = "";
-    document.getElementById("address").value = "";
-    document.getElementById("contact").value = "";
-    document.getElementById("age").value = "";
-    document.getElementById("car").value = "";
-    document.getElementById("days").value = "";
-    document.getElementById("destination").value = "";
+/*Utilities*/
+function escapeHtml(s){ if(!s) return ''; return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/*Init on load */
+window.addEventListener('load', ()=>{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  document.getElementById('landingPage').classList.add('show');
+  renderCarCatalog();
+  renderAdminDashboard();
+});
+
+/*small helper to expose navigation externally */
+function showAdminSection(section){
+  document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none');
+  document.getElementById(section).style.display = 'block';
+  renderAdminBookings();
 }
 
-function printReceipt(o) {
-    document.getElementById("receipt").innerHTML = `
-        <h4>Rental Summary</h4>
-        <p><b>Name:</b> ${o.name}</p>
-        <p><b>Car:</b> ${o.car}</p>
-        <p><b>Days:</b> ${o.days}</p>
-        <p><b>Destination:</b> ${o.destination}</p>
-        <p><b>Total:</b> ₱${o.total.toLocaleString()}</p>`;
-}
+/* alias for internal navigation usage */
+window.navigateTo = navigateTo;
+window.login = login;
+window.logout = logout;
+window.openBookingModal = openBookingModal;
+window.closeModal = closeModal;
+window.confirmBooking = confirmBooking;
+window.removeBooking = removeBooking;
+window.approveBooking = approveBooking;
+window.rejectBooking = rejectBooking;
+window.openReceipt = openReceipt;
+window.closeReceipt = closeReceipt;
+window.printReceiptWindow = printReceiptWindow;
+window.openBookingModalByIndex = openBookingModalByIndex;
 
-function loadAdminTable() {
-    const tbody = document.querySelector("#adminTable tbody");
-    tbody.innerHTML = "";
-    orders.forEach((o, i) => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${o.name}</td>
-                <td>${o.car}</td>
-                <td>${o.days}</td>
-                <td>${o.destination}</td>
-                <td>₱${o.total.toLocaleString()}</td>
-                <td>
-                    <button onclick="approve(${i})">Approve</button>
-                    <button onclick="decline(${i})">Decline</button>
-                </td>
-            </tr>`;
-    });
-}
-
-function approve(i) {
-    orders[i].status = "Approved";
-    displayAdminReceipt(orders[i]);
-}
-
-function decline(i) {
-    orders[i].status = "Declined";
-    displayAdminReceipt(orders[i]);
-}
-
-function displayAdminReceipt(o) {
-    document.getElementById("adminReceipt").innerHTML = `
-        <h4>Transaction Status</h4>
-        <p><b>Name:</b> ${o.name}</p>
-        <p><b>Car:</b> ${o.car}</p>
-        <p><b>Total:</b> ₱${o.total.toLocaleString()}</p>
-        <p><b>Status:</b> ${o.status}</p>`;
-}
-
-function userLogout() {
-    document.getElementById("mainSection").style.display = "none";
-    document.getElementById("loginSection").style.display = "flex";
-}
-
-function logout() {
-    document.getElementById("adminSection").style.display = "none";
-    document.getElementById("loginSection").style.display = "flex";
-}
 </script>
 </body>
 </html>
